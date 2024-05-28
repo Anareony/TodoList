@@ -17,7 +17,7 @@ interface TodoState {
   error: unknown;
   getTodos: () => void;
   postTodo: (todo: postTodo) => void;
-  editStatusTodo: (id: number, status: postTodo["status"]) => void;
+  changeStatusTodo: (id: number, status: postTodo["status"]) => void;
   deleteTodo: (id: number) => void;
 }
 
@@ -55,7 +55,7 @@ export const useTodosStore = create<TodoState>((set) => ({
       body: JSON.stringify({ data }),
     });
   },
-  editStatusTodo: async (id, data) => {
+  changeStatusTodo: async (id, data) => {
     const response = await fetch(`${BASE_URL}/api/tasks/${id}`, {
       method: "PUT",
       headers: {
