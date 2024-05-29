@@ -12,7 +12,6 @@ export const DeleteTodoButton = ({ id }: { id: number }) => {
       type="primary"
       danger
       onClick={() => deleteTodo(id)}
-      style={{ marginLeft: "auto" }}
       icon={<DeleteFilled />}
     />
   );

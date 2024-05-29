@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import { TodoProps, useTodosStore } from "../../store";
+import { useTodosStore } from "../../store";
 
 import { Checkbox, CheckboxProps } from "antd";
+import { TodoProps } from "../../types";
 
-interface Todo {
-  todo: TodoProps;
-}
-
-export const ChangeStatusButton: React.FC<Todo> = ({ todo }) => {
+export const ChangeStatusButton: React.FC<TodoProps> = ({ todo }) => {
   const { changeStatusTodo } = useTodosStore((state) => ({
     changeStatusTodo: state.changeStatusTodo,
   }));

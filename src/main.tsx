@@ -1,4 +1,3 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
@@ -28,6 +27,7 @@ const config: ThemeConfig = {
       defaultActiveBg: "#682ee4",
       defaultActiveColor: "#fff",
       defaultBorderColor: "transparent",
+      colorTextDisabled: "#fff",
     },
     Typography: {
       titleMarginBottom: 0,
@@ -40,9 +40,7 @@ const config: ThemeConfig = {
 };
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
-  <React.StrictMode>
-    <ConfigProvider theme={config}>
-      <App />
-    </ConfigProvider>
-  </React.StrictMode>
+  <ConfigProvider theme={config}>
+    <App />
+  </ConfigProvider>
 );

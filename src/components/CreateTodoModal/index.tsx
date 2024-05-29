@@ -1,7 +1,8 @@
-import { Button, FloatButton, Form, Input, Modal } from "antd";
+import { Button as AntdButton, Form, Input, Modal } from "antd";
 import { useState } from "react";
 import { useTodosStore } from "../../store";
 import { PlusOutlined } from "@ant-design/icons";
+import styled from "styled-components";
 
 const { TextArea } = Input;
 
@@ -9,6 +10,11 @@ interface FieldType {
   title: string;
   description: string;
 }
+
+const Button = styled(AntdButton)`
+  width: 100%;
+  margin-top: 20px;
+`;
 
 export const CreateTodoModal = () => {
   const [form] = Form.useForm();
@@ -21,9 +27,6 @@ export const CreateTodoModal = () => {
   const showModal = () => {
     setIsModalOpen(true);
   };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
 
   const handleCancel = () => {
     setIsModalOpen(false);
@@ -31,22 +34,23 @@ export const CreateTodoModal = () => {
 
   const onFinish = async () => {
     const data = form.getFieldsValue(["title", "description"]);
-    console.log("Success:", data);
     postTodo({
       title: data.title,
       description: data.description,
       status: "active",
     });
+    setIsModalOpen(false);
   };
 
   return (
     <>
-      <FloatButton onClick={showModal} type="primary" icon={<PlusOutlined />} />
+      <Button onClick={showModal} type="primary" icon={<PlusOutlined />}>
+        Create Todo
+      </Button>
 
       <Modal
         title="Create todo"
         open={isModalOpen}
-        onOk={handleOk}
         onCancel={handleCancel}
         footer={
           <>
