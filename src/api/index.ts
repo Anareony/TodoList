@@ -10,6 +10,7 @@ const instance = axios.create({
   baseURL: BASE_URL,
   headers: {
     Authorization: `Bearer  + ${accessToken}`,
+    "Content-Type": "application/json",
   },
 });
 
@@ -25,22 +26,16 @@ export const getTodos = (page: number) => {
 };
 
 export const postTodo = (data: TodoAttributes) => {
-  return instance.post("/api/tasks", JSON.stringify({ data }), {
-    headers: { "Content-Type": "application/json" },
-  });
+  return instance.post("/api/tasks", JSON.stringify({ data }));
 };
 
 export const changeStatusTodo = (
   id: number,
   data: { status: TodoAttributes["status"] }
 ) => {
-  return instance.put(`/api/tasks/${id}`, JSON.stringify({ data }), {
-    headers: { "Content-Type": "application/json" },
-  });
+  return instance.put(`/api/tasks/${id}`, JSON.stringify({ data }));
 };
 
 export const deleteTodo = (id: number) => {
-  return instance.delete(`/api/tasks/${id}`, {
-    headers: { "Content-Type": "application/json" },
-  });
+  return instance.delete(`/api/tasks/${id}`);
 };
