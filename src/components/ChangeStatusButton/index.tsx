@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 
-import { useTodosStore } from "../../store";
-
 import { Checkbox, CheckboxProps } from "antd";
-import { TodoProps } from "../../types";
+
+import { useTodosStore } from "../../store";
+import { Status, Todo, TodoProps } from "../../types";
 
 export const ChangeStatusButton: React.FC<TodoProps> = ({ todo }) => {
   const { changeStatusTodo } = useTodosStore((state) => ({
@@ -11,16 +11,24 @@ export const ChangeStatusButton: React.FC<TodoProps> = ({ todo }) => {
   }));
   const [checked, setChecked] = useState(false);
 
+  const toggleCheckbox = (todo: Todo) => {
+    setChecked(todo.attributes.status === Status.Completed ? true : false);
+  };
+
   useEffect(() => {
-    setChecked(todo.attributes.status === "completed" ? true : false);
+    toggleCheckbox(todo);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const onChange: CheckboxProps["onChange"] = (e) => {
-    setChecked(e.target.checked);
     if (e.target.checked) {
-      changeStatusTodo(todo.id, { status: "completed" });
+      changeStatusTodo(todo.id, { status: Status.Completed }).then((data) => {
+        toggleCheckbox(data);
+      });
     } else {
-      changeStatusTodo(todo.id, { status: "active" });
+      changeStatusTodo(todo.id, { status: Status.Active }).then((data) => {
+        toggleCheckbox(data);
+      });
     }
   };
 
