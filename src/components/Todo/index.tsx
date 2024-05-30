@@ -1,11 +1,12 @@
 import React from "react";
+import { styled } from "styled-components";
+
+import { Divider, Flex, Typography } from "antd";
 
 import { DeleteTodoButton } from "../DeleteTodoButton";
 import { ChangeStatusButton } from "../ChangeStatusButton";
-import { Divider, Flex, Typography } from "antd";
 import { AddToFavButton } from "../AddToFavButton";
 import { TodoProps } from "../../types";
-import { styled } from "styled-components";
 
 const { Text, Title: AntdTitle } = Typography;
 
@@ -32,7 +33,7 @@ export const Todo: React.FC<TodoProps> = ({ todo }) => {
           <Title level={5}>{todo.attributes.title}</Title>
           <Text type="secondary">{todo.attributes.description}</Text>
         </TextContainer>
-        <AddToFavButton todo={todo} />
+        <AddToFavButton id={todo.id} />
         <DeleteTodoButton id={todo.id} />
       </FlexContainer>
       <Divider />

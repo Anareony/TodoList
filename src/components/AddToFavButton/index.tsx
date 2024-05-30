@@ -1,11 +1,9 @@
-import React from "react";
+import styled from "styled-components";
 
 import { Button as AntdButton } from "antd";
 import { StarFilled } from "@ant-design/icons";
 
 import { useTodosStore } from "../../store";
-import { TodoProps } from "../../types";
-import styled from "styled-components";
 
 interface isFav {
   $isfav: boolean;
@@ -23,24 +21,24 @@ const Button = styled(AntdButton)`
   }
 `;
 
-export const AddToFavButton: React.FC<TodoProps> = ({ todo }) => {
-  const { setTodos, isFav, filterFavTodo } = useTodosStore((state) => ({
+export const AddToFavButton = ({ id }: { id: number }) => {
+  const { setFavTodos, isFav, filterFavTodo } = useTodosStore((state) => ({
     isFav: state.isFav,
-    setTodos: state.setFavTodos,
+    setFavTodos: state.setFavTodos,
     filterFavTodo: state.filterFavTodo,
   }));
 
   const toggleFav = () => {
-    if (isFav(todo.id)) {
-      filterFavTodo(todo.id);
+    if (isFav(id)) {
+      filterFavTodo(id);
     } else {
-      setTodos(todo);
+      setFavTodos(id);
     }
   };
 
   return (
     <Button type="text" onClick={toggleFav}>
-      <Icon $isfav={isFav(todo.id)} />
+      <Icon $isfav={isFav(id)} />
     </Button>
   );
 };

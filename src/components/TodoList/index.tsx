@@ -1,9 +1,11 @@
-import { Flex, Spin, Typography } from "antd";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import styled from "styled-components";
+
+import { Empty, Flex, Spin, Typography } from "antd";
+
 import { useFilter, useTodosStore } from "../../store";
 import { useInfiniteScroll } from "../../hooks";
 import { Todo } from "../Todo";
-import styled from "styled-components";
 
 const { Title: AntdTitle } = Typography;
 
@@ -12,6 +14,10 @@ const FlexContainer = styled(Flex)`
   background: #18171c;
   padding: 20px;
   border-radius: 10px;
+  @media (max-width: 768px) {
+    padding: 10px;
+    min-width: 100%;
+  }
 `;
 
 const Title = styled(AntdTitle)`
@@ -23,7 +29,7 @@ export const TodoList = () => {
   const { getTodos, pagination, isLoading } = useTodosStore((state) => ({
     getTodos: state.getTodos,
     pagination: state.pagination,
-    isLoading: state.loading,
+    isLoading: state.isLoading,
   }));
 
   const { filter } = useFilter((state) => ({
@@ -33,33 +39,27 @@ export const TodoList = () => {
   const todos = useTodosStore((state) => {
     switch (filter) {
       case "completed":
-        return state.todos.filter(
-          (todo) => todo.attributes.status === "completed"
-        );
+        return state.todos.filter((todo) => todo.attributes.status === "completed");
       case "active":
-        return state.todos.filter(
-          (todo) => todo.attributes.status === "active"
-        );
+        return state.todos.filter((todo) => todo.attributes.status === "active");
       case "favourite":
-        return state.favTodos;
+        return state.todos.filter((todo) => state.favTodos.find((id) => todo.id === id));
       default:
         return state.todos;
     }
   });
 
-  const [page, setPage] = useState(1);
-
   useEffect(() => {
-    getTodos(page);
-    setPage((prev) => prev + 1);
+    getTodos();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const loadMore = () => {
-    const isNotLastPage =
-      pagination.pageCount >= page && pagination.total > pagination.pageSize;
-    if (!isLoading && isNotLastPage) {
-      getTodos(page);
-      setPage((prev) => prev + 1);
+    const hasMore =
+      pagination.pageCount > pagination.page && pagination.total >= pagination.pageSize;
+    console.log(!isLoading && hasMore);
+    if (!isLoading && hasMore) {
+      getTodos();
     }
   };
 
@@ -68,9 +68,11 @@ export const TodoList = () => {
   return (
     <FlexContainer vertical gap={10}>
       <Title level={2}>Tasks</Title>
-      {todos.map((todo) => (
-        <Todo key={todo.id} todo={todo} />
-      ))}
+      {todos.length || isLoading ? (
+        todos.map((todo) => <Todo key={todo.id} todo={todo} />)
+      ) : (
+        <Empty />
+      )}
       <div ref={infiniteScrollRef}></div>
       {isLoading && <Spin size="large" />}
     </FlexContainer>
