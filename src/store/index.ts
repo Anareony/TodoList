@@ -1,22 +1,24 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
+import { persist } from "zustand/middleware";
 import { changeStatusTodo, deleteTodo, getTodos, postTodo } from "../api";
-import { Pagination, Todo, TodoAttributes } from "../types";
+import { Filter, Pagination, Todo, TodoAttributes } from "../types";
 
 interface TodoState {
   todos: Todo[];
-  favTodos: Todo[];
+  favTodos: Todo["id"][];
   pagination: Pagination;
-  loading: boolean;
+  isLoading: boolean;
+  isSuccess: boolean;
   error: unknown;
-  getTodos: (page: number) => void;
-  postTodo: (todo: TodoAttributes) => void;
+  currentPage: number;
+  getTodos: () => Promise<void>;
+  postTodo: (todo: TodoAttributes) => Promise<void>;
   changeStatusTodo: (
     id: number,
     { status }: { status: TodoAttributes["status"] }
-  ) => void;
-  deleteTodo: (todoId: Todo["id"]) => void;
-  setFavTodos: (todo: Todo) => void;
+  ) => Promise<Todo>;
+  deleteTodo: (todoId: Todo["id"]) => Promise<void>;
+  setFavTodos: (todo: Todo["id"]) => void;
   filterFavTodo: (todoId: Todo["id"]) => void;
   isFav: (todoId: Todo["id"]) => boolean;
 }
@@ -28,55 +30,88 @@ export const useTodosStore = create<TodoState>()(
       favTodos: [],
       pagination: {} as Pagination,
       error: null,
-      loading: false,
-      getTodos: async (page) => {
-        set({ loading: true });
+      isLoading: false,
+      isSuccess: false,
+      currentPage: 0,
+
+      getTodos: async () => {
+        set({ currentPage: get().currentPage + 1 });
         try {
-          const response = await getTodos(page);
+          set({ isLoading: true });
+          const response = await getTodos(get().currentPage);
           if (response.status === 200) {
-            const body = await response.data;
-            set({ todos: [...get().todos, ...body.data] });
-            set({ pagination: body.meta.pagination });
+            const body = response.data;
+            set(() => ({
+              todos: [...get().todos, ...body.data],
+              pagination: body.meta.pagination,
+            }));
           }
         } catch (error: unknown) {
           set({ error: error });
         } finally {
-          set({ loading: false });
+          set({ isLoading: false });
         }
       },
+
       postTodo: async (data) => {
-        const response = await postTodo(data);
-        const body = await response.data;
-        console.log(body);
-        // set({ todos: [response.data, ...get().todos] });
-      },
-      changeStatusTodo: async (id, data) => {
-        const response = await changeStatusTodo(id, data);
-        // const body = await response.data;
-      },
-      deleteTodo: async (id) => {
-        const response = await deleteTodo(id);
-        if (response.status === 200) {
-          set({ todos: get().todos.filter((todoId) => todoId.id !== id) });
-          set({
-            favTodos: get().favTodos.filter((todoId) => todoId.id !== id),
-          });
+        try {
+          const response = await postTodo(data);
+          if (response.status === 200) {
+            set({ isSuccess: true });
+
+            const pagination = get().pagination;
+            const isBottomPage =
+              pagination.page * pagination.pageSize >= pagination.total;
+
+            const body = response.data;
+
+            if (pagination.pageSize >= pagination.total && isBottomPage) {
+              set({ todos: [body.data, ...get().todos] });
+            }
+          }
+        } catch (error: unknown) {
+          set({ error: error });
+        } finally {
+          set({ isSuccess: false });
         }
       },
-      setFavTodos: (todo) => set({ favTodos: [...get().favTodos, todo] }),
+
+      changeStatusTodo: async (id, data) => {
+        try {
+          const response = await changeStatusTodo(id, data);
+          if (response.status === 200) {
+            return response.data.data;
+          }
+        } catch (error: unknown) {
+          set({ error: error });
+        }
+      },
+
+      deleteTodo: async (id) => {
+        try {
+          const response = await deleteTodo(id);
+          if (response.status === 200) {
+            set({ todos: get().todos.filter((todoId) => todoId.id !== id) });
+            get().filterFavTodo(id);
+          }
+        } catch (error: unknown) {
+          set({ error: error });
+        }
+      },
+
+      setFavTodos: (todoId) => set({ favTodos: [...get().favTodos, todoId] }),
+
       filterFavTodo: (id) =>
-        set({ favTodos: get().favTodos.filter((todoId) => todoId.id !== id) }),
-      isFav: (id) => get().favTodos.some((todo) => todo.id === id),
+        set({ favTodos: get().favTodos.filter((todoId) => todoId !== id) }),
+
+      isFav: (id) => get().favTodos.some((todoId) => todoId === id),
     }),
     {
       name: "favTodos",
       partialize: (state) => ({ favTodos: state.favTodos }),
-      storage: createJSONStorage(() => localStorage),
     }
   )
 );
-
-type Filter = "all" | "active" | "completed" | "favourite";
 
 interface Filters {
   filter: Filter;
@@ -84,6 +119,6 @@ interface Filters {
 }
 
 export const useFilter = create<Filters>((set) => ({
-  filter: "all",
+  filter: Filter.All,
   setFilter: (value) => set({ filter: value }),
 }));
