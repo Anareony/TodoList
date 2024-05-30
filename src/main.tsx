@@ -1,15 +1,18 @@
 import ReactDOM from "react-dom/client";
-import App from "./App.tsx";
-import "./index.css";
 
 import { ConfigProvider } from "antd";
 import type { ThemeConfig } from "antd";
+
+import App from "./App.tsx";
+import "./index.css";
 
 const config: ThemeConfig = {
   token: {
     colorText: "#fff",
     colorTextDescription: "#b2b2b2",
     colorPrimary: "#682ee4",
+    colorIcon: "#fff",
+    colorBgElevated: "#18171c",
   },
   components: {
     Checkbox: {
@@ -35,6 +38,21 @@ const config: ThemeConfig = {
     },
     Divider: {
       marginLG: 0,
+    },
+    Modal: {
+      titleColor: "#fff",
+      headerBg: "#18171c",
+      contentBg: "#18171c",
+    },
+    Input: {
+      colorBgContainer: "#18171c",
+      colorText: "#fff",
+      colorTextPlaceholder: "#ccc",
+      colorIcon: "#fff",
+    },
+    Notification: {
+      colorBgElevated: "#18171c",
+      colorBgContainer: "#18171c",
     },
   },
 };

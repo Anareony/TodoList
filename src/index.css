@@ -8,6 +8,7 @@ body {
   height: 100%;
   position: relative;
   min-height: 100vh;
+  background: #111214;
 }
 #root {
   height: 100vh;
