@@ -1,4 +1,14 @@
-type Status = "completed" | "active";
+export enum Status {
+  Completed = "completed",
+  Active = "active",
+}
+
+export enum Filter {
+  All = "all",
+  Active = "active",
+  Completed = "completed",
+  Favourite = "favourite",
+}
 
 export interface TodoAttributes {
   title: string;
