@@ -84,7 +84,7 @@ export const TodoList = () => {
       ) : (
         <Empty style={{ height: "100%" }} />
       )}
-      {todos.length > 0 && <div ref={infiniteScrollRef} />}
+      {todos.length >= pagination.pageSize && <div ref={infiniteScrollRef} />}
       {isLoading && <Spin size="large" />}
     </FlexContainer>
   );
