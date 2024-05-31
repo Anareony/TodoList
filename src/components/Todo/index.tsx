@@ -27,7 +27,7 @@ const TextContainer = styled(Flex)`
 export const Todo: React.FC<TodoProps> = ({ todo }) => {
   return (
     <>
-      <FlexContainer align="center" gap={15}>
+      <FlexContainer align="center" gap={15} data-testid="todo-item">
         <ChangeStatusButton todo={todo} />
         <TextContainer vertical>
           <Title level={5}>{todo.attributes.title}</Title>

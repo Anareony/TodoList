@@ -25,8 +25,14 @@ export const DeleteTodoButton = ({ id }: { id: number }) => {
       onConfirm={confirm}
       okText="Yes"
       cancelText="No"
+      aria-label="popconfirm"
     >
-      <Button type="primary" danger icon={<DeleteFilled />} />
+      <Button
+        type="primary"
+        danger
+        icon={<DeleteFilled />}
+        data-testid="delete"
+      />
     </Popconfirm>
   );
 };

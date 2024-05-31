@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import styled from "styled-components";
+import { shallow } from "zustand/shallow";
 
 import { Empty, Flex, Spin, Typography } from "antd";
 
@@ -26,11 +27,14 @@ const Title = styled(AntdTitle)`
 `;
 
 export const TodoList = () => {
-  const { getTodos, pagination, isLoading } = useTodosStore((state) => ({
-    getTodos: state.getTodos,
-    pagination: state.pagination,
-    isLoading: state.isLoading,
-  }));
+  const { getTodos, pagination, isLoading } = useTodosStore(
+    (state) => ({
+      getTodos: state.getTodos,
+      pagination: state.pagination,
+      isLoading: state.isLoading,
+    }),
+    shallow
+  );
 
   const { filter } = useFilter((state) => ({
     filter: state.filter,
@@ -39,11 +43,17 @@ export const TodoList = () => {
   const todos = useTodosStore((state) => {
     switch (filter) {
       case "completed":
-        return state.todos.filter((todo) => todo.attributes.status === "completed");
+        return state.todos.filter(
+          (todo) => todo.attributes.status === "completed"
+        );
       case "active":
-        return state.todos.filter((todo) => todo.attributes.status === "active");
+        return state.todos.filter(
+          (todo) => todo.attributes.status === "active"
+        );
       case "favourite":
-        return state.todos.filter((todo) => state.favTodos.find((id) => todo.id === id));
+        return state.todos.filter((todo) =>
+          state.favTodos.find((id) => todo.id === id)
+        );
       default:
         return state.todos;
     }
@@ -56,7 +66,8 @@ export const TodoList = () => {
 
   const loadMore = () => {
     const hasMore =
-      pagination.pageCount > pagination.page && pagination.total >= pagination.pageSize;
+      pagination.pageCount > pagination.page &&
+      pagination.total >= pagination.pageSize;
     console.log(!isLoading && hasMore);
     if (!isLoading && hasMore) {
       getTodos();

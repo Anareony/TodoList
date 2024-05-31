@@ -37,8 +37,8 @@ export const AddToFavButton = ({ id }: { id: number }) => {
   };
 
   return (
-    <Button type="text" onClick={toggleFav}>
-      <Icon $isfav={isFav(id)} />
+    <Button type="text" onClick={toggleFav} data-testid="toggleFav">
+      <Icon $isfav={isFav(id)} data-testid="favIcon" />
     </Button>
   );
 };

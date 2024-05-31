@@ -32,5 +32,5 @@ export const ChangeStatusButton: React.FC<TodoProps> = ({ todo }) => {
     }
   };
 
-  return <Checkbox checked={checked} onChange={onChange} />;
+  return <Checkbox checked={checked} onChange={onChange} data-testid="checkbox" />;
 };

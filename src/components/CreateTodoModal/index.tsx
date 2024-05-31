@@ -110,13 +110,17 @@ export const CreateTodoModal = () => {
             name="title"
             rules={[{ required: true, message: "Please type your title!" }]}
           >
-            <Input placeholder="Title" />
+            <Input placeholder="Title" data-testid="title" />
           </Form.Item>
           <Form.Item<FieldType>
             name="description"
             rules={[{ required: true, message: "Please type your description!" }]}
           >
-            <TextArea placeholder="Description" autoSize={{ minRows: 3, maxRows: 6 }} />
+            <TextArea
+              placeholder="Description"
+              autoSize={{ minRows: 3, maxRows: 6 }}
+              data-testid="description"
+            />
           </Form.Item>
         </Form>
       </Modal>
