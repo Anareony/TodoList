@@ -2,10 +2,11 @@ import styled from "styled-components";
 
 import { Layout as AntdLayout } from "antd";
 
-import { CreateTodoModal } from "./components/CreateTodoModal";
-import { FilterButtons } from "./components/FilterButtons";
-import { TodoList } from "./components/TodoList";
-import { Notification } from "./components/Notification";
+import { CreateTodoModal } from "../components/CreateTodoModal";
+import { FilterButtons } from "../components/FilterButtons";
+import { TodoList } from "../components/TodoList";
+import { Notification } from "../components/Notification";
+import { Providers } from "./providers";
 
 const { Content: AntdContent, Sider: AntdSider } = AntdLayout;
 
@@ -45,16 +46,18 @@ const Content = styled(AntdContent)`
 
 function App() {
   return (
-    <Layout>
-      <Sider>
-        <FilterButtons />
-        <CreateTodoModal />
-      </Sider>
-      <Content>
-        <TodoList />
-      </Content>
-      <Notification />
-    </Layout>
+    <Providers>
+      <Layout>
+        <Sider>
+          <FilterButtons />
+          <CreateTodoModal />
+        </Sider>
+        <Content>
+          <TodoList />
+        </Content>
+        <Notification />
+      </Layout>
+    </Providers>
   );
 }
 
