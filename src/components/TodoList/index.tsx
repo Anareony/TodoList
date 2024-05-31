@@ -82,9 +82,9 @@ export const TodoList = () => {
       {todos.length || isLoading ? (
         todos.map((todo) => <Todo key={todo.id} todo={todo} />)
       ) : (
-        <Empty />
+        <Empty style={{ height: "100%" }} />
       )}
-      <div ref={infiniteScrollRef}></div>
+      {todos.length > 0 && <div ref={infiniteScrollRef} />}
       {isLoading && <Spin size="large" />}
     </FlexContainer>
   );
