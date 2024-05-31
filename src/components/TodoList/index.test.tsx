@@ -15,8 +15,8 @@ describe("TodoList", () => {
     await waitFor(() => {
       expect(screen.findAllByTestId("todo-item"));
       expect(screen.findAllByTestId("checkbox"));
-      expect(screen.queryAllByTestId("delete"));
-      expect(screen.findByTestId("chekbox"));
+      expect(screen.findAllByTestId("delete"));
+      expect(screen.findAllByTestId("checkbox"));
     });
   });
 });
